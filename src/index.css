@@ -1,0 +1,89 @@
+﻿@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Georgia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Pretendard', "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Georgia", "Noto Serif KR", serif;
+  --font-bebas: "Bebas Neue", sans-serif;
+  
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-gray-500: #333333;
+  --color-gray-400: #666666;
+  --color-gray-300: #999999;
+  --color-gray-200: #CCCCCC;
+  --color-gray-100: #EEEEEE;
+
+  /* App Backgrounds based on rules */
+  --color-concrete: #F5F5F3;
+  --color-ink: #1A1A1A;
+  --color-paper: #FDFDFD;
+  --color-border: #EEEEEE; /* Use gray-100 for static borders */
+}
+
+@layer base {
+  body {
+    @apply bg-concrete text-black font-sans h-screen overflow-hidden;
+  }
+}
+
+.markdown-body {
+  @apply font-serif leading-relaxed text-black;
+}
+
+.markdown-body p {
+  @apply mb-4 leading-[1.6] text-[16px];
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  @apply font-sans font-extrabold mt-6 mb-3 text-black tracking-tight;
+}
+
+.markdown-body h1 { @apply text-xl border-b-2 border-black pb-2; }
+.markdown-body h2 { @apply text-lg border-b border-black pb-1; }
+.markdown-body h3 { @apply text-[16px]; }
+
+.markdown-body ul {
+  @apply list-disc list-inside mb-4 pl-4 text-[16px];
+}
+
+.markdown-body ol {
+  @apply list-decimal list-inside mb-4 pl-4 text-[16px];
+}
+
+.markdown-body blockquote {
+  @apply border-l-[3px] border-black pl-4 italic text-black bg-gray-100 py-3 pr-4 my-4 font-sans text-sm;
+}
+
+.replacement-tag {
+  @apply font-sans text-[11px] bg-gray-100 px-[8px] py-[4px] mt-2 border-l-2 border-black inline-block text-black not-italic font-medium tracking-tight;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CCCCCC;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-400);
+}
+
+@media print {
+  body {
+    background: white;
+    height: auto;
+    overflow: visible;
+  }
+  
+  .print\:hidden {
+    display: none !important;
+  }
+}
