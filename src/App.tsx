@@ -137,32 +137,33 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-concrete overflow-hidden font-sans">
-      {/* Left Sidebar - Library */}
+    <div className="flex h-screen w-full bg-[#fcfcfc] overflow-hidden font-sans relative">
+      {leftOpen && (
+        <div className="fixed inset-0 bg-black/10 z-40 lg:hidden" onClick={() => setLeftOpen(false)} />
+      )}
+      {/* Left Sidebar - Library (Floating) */}
       <div 
         className={cn(
-          "fixed md:relative z-20 h-full bg-white border-r border-border transition-all duration-300 flex flex-col print:hidden",
-          leftOpen ? "w-[288px] translate-x-0" : "-translate-x-full md:translate-x-0 md:w-[60px]"
+          "fixed lg:absolute left-0 lg:left-4 top-0 lg:top-4 bottom-0 lg:bottom-4 w-[85vw] max-w-sm lg:w-72 bg-white/90 backdrop-blur-md rounded-none lg:rounded-2xl shadow-[0_8px_32px_rgb(0,0,0,0.06)] border-r lg:border border-neutral-200/50 z-50 transition-all duration-300 ease-out flex flex-col overflow-hidden print:hidden",
+          leftOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0 pointer-events-none"
         )}
       >
-        <div className={cn("p-[15px] border-b border-border flex items-center justify-between", !leftOpen && "opacity-0 md:opacity-100")}>
-          <h2 className="font-bebas text-[18px] tracking-wide text-ink flex items-center gap-2">
-            <BookMarked className="w-4 h-4 text-ink opacity-60 shrink-0" /> <span className={cn(leftOpen ? "block" : "md:hidden")}>LIBRARY</span>
-          </h2>
-          <button onClick={() => setLeftOpen(false)} className="md:hidden text-ink opacity-50 hover:opacity-100">
-            <PanelLeftClose className="w-5 h-5" />
-          </button>
-        </div>
-        <div className={cn("px-4 pt-4 pb-2 border-b border-border", !leftOpen && "opacity-0 md:opacity-100")}>
+        <div className="p-4 border-b border-neutral-100/60">
+           <div className="flex items-center justify-between mb-3 lg:hidden">
+            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Library</span>
+            <button onClick={() => setLeftOpen(false)} className="p-1.5 rounded-lg text-neutral-400 hover:text-black hover:bg-neutral-100">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
            <button
               onClick={() => createNewSession()}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-black text-white rounded-[10px] hover:bg-neutral-800 transition-all shadow-sm group"
+              className="w-full flex items-center justify-center gap-2 py-3 bg-black text-white rounded-xl hover:bg-neutral-800 transition-all shadow-sm group"
            >
               <Plus className="w-4 h-4 transition-transform group-hover:rotate-90" />
               <span className="text-[11px] font-black uppercase tracking-widest">New Chat</span>
            </button>
         </div>
-        <div className={cn("flex-1 overflow-y-auto p-4 custom-scrollbar", !leftOpen && "opacity-0 md:opacity-100")}>
+        <div className={cn("flex-1 overflow-y-auto p-4 custom-scrollbar")}>
           <div className="flex flex-col gap-2">
             {sessions.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 opacity-50">
@@ -207,56 +208,43 @@ export default function App() {
         </div>
       </div>
 
-      {/* Center - Main Chat Area */}
-      <div className="flex-1 flex flex-col h-full relative z-10 min-w-0">
-        {/* Header */}
-        <header className="h-[56px] shrink-0 bg-white border-b border-border flex items-center justify-between px-5 print:hidden">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setLeftOpen(!leftOpen)}
-              className={cn("w-[44px] h-[44px] flex items-center justify-center border-r border-border hover:bg-concrete transition-none -ml-5")}
-            >
-              <Menu className="w-[18px] h-[18px]" />
-            </button>
-            <h1 className="font-bebas text-[20px] text-ink tracking-wide flex items-center gap-2">
-              CAI-WRITER <span className="font-sans font-light opacity-60 text-sm tracking-normal">v1.0.4</span>
-            </h1>
+      {/* Center - Main Chat Area (Full Background) */}
+      <div className="flex-1 flex flex-col h-full relative z-10 min-w-0 bg-transparent">
+        
+        {/* Header - Floating Top */}
+        <header className="absolute top-0 left-0 right-0 h-[70px] flex items-center justify-between px-4 lg:px-6 z-30 pointer-events-none print:hidden">
+          <div className="pointer-events-auto mt-4">
+             {!leftOpen && (
+               <button onClick={() => setLeftOpen(true)} className="w-[44px] h-[44px] bg-white border border-neutral-200/60 rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.04)] flex items-center justify-center hover:bg-neutral-50 transition-all">
+                 <Menu className="w-[18px] h-[18px] text-neutral-600" />
+               </button>
+             )}
           </div>
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-5 text-xs font-semibold text-black whitespace-nowrap">
-                <span className="opacity-80 font-bebas text-[14px] tracking-wide">PROJECT: THE_MODERN_VOID</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="flex bg-concrete p-[2px] border border-gray-100 print:hidden hidden sm:flex h-[44px] rounded-full items-center px-1">
-                  <button 
-                    onClick={exportToMarkdown}
-                    className="px-3 py-1 hover:bg-white text-black opacity-80 hover:opacity-100 transition-none flex items-center gap-2 text-[12px] font-sans font-medium rounded-full"
-                    title="Markdown 내보내기"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    MD
-                  </button>
-                  <button 
-                    onClick={exportToPdf}
-                    className="px-3 py-1 hover:bg-white text-black opacity-80 hover:opacity-100 transition-none flex items-center gap-2 text-[12px] font-sans font-medium rounded-full"
-                    title="PDF로 인쇄"
-                  >
-                    PDF
-                  </button>
-              </div>
-              <button 
-                onClick={() => setRightOpen(!rightOpen)}
-                className="w-[44px] h-[44px] flex items-center justify-center hover:bg-concrete transition-none rounded-full ml-2"
-              >
-                <Settings2 className="w-[18px] h-[18px]" />
-              </button>
-            </div>
+
+          <div className="pointer-events-auto flex items-center gap-3 bg-white/80 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-neutral-200/50 shadow-[0_4px_24px_rgb(0,0,0,0.04)] mt-4 transition-all">
+             <h1 className="font-bebas text-[18px] text-ink tracking-wide">CAI-WRITER</h1>
+             <span className="opacity-30 text-neutral-400">|</span>
+             <span className="font-bebas text-[14px] text-neutral-500 tracking-widest">
+               PROJECT: {currentSessionId ? sessions.find(s => s.id === currentSessionId)?.title.substring(0,24) : 'THE_MODERN_VOID'}
+             </span>
+          </div>
+
+          <div className="pointer-events-auto flex items-center gap-3 mt-4">
+             <div className="bg-white/80 backdrop-blur-md border border-neutral-200/50 shadow-[0_2px_8px_rgb(0,0,0,0.04)] hidden sm:flex rounded-xl p-1 items-center">
+                <button onClick={exportToMarkdown} className="px-3 py-1.5 text-neutral-500 hover:text-black hover:bg-neutral-100 transition-all text-[12px] font-bold rounded-lg flex gap-1.5 items-center"><Download className="w-3.5 h-3.5"/>MD</button>
+                <button onClick={exportToPdf} className="px-3 py-1.5 text-neutral-500 hover:text-black hover:bg-neutral-100 transition-all text-[12px] font-bold rounded-lg">PDF</button>
+             </div>
+             {!rightOpen && (
+               <button onClick={() => setRightOpen(true)} className="w-[44px] h-[44px] bg-white border border-neutral-200/60 rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.04)] flex items-center justify-center hover:bg-neutral-50 transition-all">
+                 <Settings2 className="w-[18px] h-[18px] text-neutral-600" />
+               </button>
+             )}
           </div>
         </header>
 
         {/* Chat Messages */}
-        <main className="flex-1 overflow-y-auto print:overflow-visible p-[20px] md:p-[40px] bg-paper print:bg-white">
-          <div className="max-w-[600px] mx-auto space-y-6 pb-10 print:pb-0 font-sans">
+        <main className="flex-1 overflow-y-auto print:overflow-visible p-[20px] pt-[90px] md:p-[40px] md:pt-[100px] bg-transparent print:bg-white custom-scrollbar relative z-10 w-full flex-col flex items-center">
+          <div className="w-full max-w-[700px] space-y-6 pb-20 print:pb-0 font-sans">
             {messages.map(msg => (
               <div key={msg.id} className={cn("flex flex-col gap-2", msg.role === 'user' ? "items-end" : "items-start")}>
                 <div className={cn(
@@ -301,21 +289,22 @@ export default function App() {
           </div>
         </main>
 
-        {/* Input Area */}
-        <div className="p-4 bg-paper print:hidden">
+        {/* Input Area Overlay */}
+        <div className="px-4 pb-6 pt-2 bg-gradient-to-t !from-[#fcfcfc] !via-[#fcfcfc]/90 !to-transparent print:hidden absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
+          <div className="w-full max-w-[700px] mx-auto pointer-events-auto">
           {selectedImage && (
-            <div className="max-w-[600px] mx-auto mb-3 relative inline-block">
+            <div className="mb-3 relative inline-block">
               <img src={selectedImage.url} alt="Preview" className="h-[80px] border border-gray-200 shadow-sm object-cover rounded-[8px]" />
               <button
                 type="button"
                 onClick={() => setSelectedImage(null)}
-                className="absolute -top-2 -right-2 bg-white border border-gray-200 p-1 text-black hover:bg-concrete transition-none rounded-full"
+                className="absolute -top-2 -right-2 bg-white border border-gray-200 p-1 text-black hover:bg-neutral-50 transition-all rounded-full shadow-sm"
               >
                 <X className="w-3 h-3" />
               </button>
             </div>
           )}
-          <form onSubmit={handleSubmit} className="max-w-[600px] mx-auto relative flex flex-col bg-white border border-gray-200 p-[15px] focus-within:border-black transition-none min-h-[100px] rounded-[12px] shadow-sm">
+          <form onSubmit={handleSubmit} className="relative flex flex-col bg-white border border-neutral-200/80 p-[15px] focus-within:border-black/50 transition-all min-h-[100px] rounded-2xl shadow-[0_8px_32px_rgb(0,0,0,0.04)]">
             <div className="flex gap-2 h-full">
               <label className="text-gray-500 hover:text-black transition-none cursor-pointer shrink-0 border border-transparent hover:border-gray-200 rounded-md h-6 w-6 flex items-center justify-center">
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
@@ -349,37 +338,41 @@ export default function App() {
           </form>
         </div>
       </div>
+      </div>
 
-      {/* Right Sidebar - Dashboard */}
+      {rightOpen && (
+        <div className="fixed inset-0 bg-black/10 z-40 lg:hidden" onClick={() => setRightOpen(false)} />
+      )}
+      {/* Right Sidebar - Dashboard (Floating) */}
       <div 
         className={cn(
-          "fixed md:relative right-0 z-20 h-full bg-white border-l border-border transition-all duration-300 flex flex-col print:hidden",
-          rightOpen ? "translate-x-0 w-[300px]" : "translate-x-full md:translate-x-0 md:w-0"
+          "fixed lg:absolute right-0 lg:right-4 top-0 lg:top-4 bottom-0 lg:bottom-4 w-[85vw] max-w-sm lg:w-[320px] bg-white/90 backdrop-blur-md rounded-none lg:rounded-2xl shadow-[0_8px_32px_rgb(0,0,0,0.06)] border-l lg:border border-neutral-200/50 z-50 transition-all duration-300 ease-out flex flex-col overflow-hidden print:hidden",
+          rightOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
         )}
       >
-        <div className="p-5 border-b border-border flex items-center justify-between min-w-[300px] h-[56px] shrink-0">
-          <h2 className="font-bebas text-[18px] tracking-wide text-ink flex items-center gap-2">
+        <div className="p-4 border-b border-neutral-100/60 flex items-center justify-between">
+          <h2 className="font-bebas text-[16px] tracking-widest text-ink flex items-center gap-2">
             <BrainCircuit className="w-4 h-4 text-ink opacity-60" /> INSIGHT DASHBOARD
           </h2>
-          <button onClick={() => setRightOpen(false)} className="md:hidden text-ink opacity-50 hover:opacity-100">
-            <PanelRightClose className="w-5 h-5" />
+          <button onClick={() => setRightOpen(false)} className="text-neutral-400 hover:text-black hover:bg-neutral-100 p-1.5 rounded-lg transition-colors">
+            <PanelRightClose className="w-4 h-4" />
           </button>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-5 space-y-8 min-w-[300px]">
+        <div className="flex-1 overflow-y-auto p-5 space-y-8 custom-scrollbar">
           {/* Style Selector */}
           <section>
-            <h3 className="font-bebas text-[14px] text-ink uppercase tracking-[1px] mb-[15px] border-b-2 border-ink pb-1">스타일 템플릿</h3>
+            <h3 className="font-bebas text-[13px] text-neutral-400 uppercase tracking-widest mb-3">스타일 템플릿</h3>
             <div className="flex flex-col gap-2">
               {STYLES.map(style => (
                 <button
                   key={style}
                   onClick={() => setActiveStyle(style)}
                   className={cn(
-                    "w-full text-left px-4 h-[44px] border-[1.5px] transition-none flex justify-between items-center cursor-pointer font-bebas text-[16px] tracking-wide rounded-[10px]",
+                    "w-full text-left px-4 h-[44px] border transition-all flex justify-between items-center cursor-pointer font-bebas text-[15px] tracking-wide rounded-xl shadow-sm",
                     activeStyle === style 
-                      ? "bg-white border-black text-black" 
-                      : "bg-white border-gray-200 text-gray-500 hover:border-black hover:text-black"
+                      ? "bg-black border-black text-white" 
+                      : "bg-white border-neutral-200 text-neutral-600 hover:border-black hover:text-black"
                   )}
                 >
                   {style}
@@ -387,19 +380,17 @@ export default function App() {
                 </button>
               ))}
             </div>
-            <p className="text-[11px] text-gray-500 mt-2 leading-[1.4] font-sans">
+            <p className="text-[11px] text-neutral-400 mt-2 leading-[1.4] font-sans">
               선택한 템플릿에 따라 AI의 어조, 단어의 물성, 문장의 호흡이 실시간으로 변환됩니다.
             </p>
           </section>
 
-
-
           {/* Image Analysis Standin */}
           {selectedImage && (
             <section>
-              <h3 className="font-bebas text-[14px] text-ink uppercase tracking-[1px] mb-[15px] border-b-2 border-ink pb-1">이미지 스캔</h3>
-              <div className="w-full h-[120px] bg-concrete border-dashed border border-border flex items-center justify-center text-[12px] text-gray-500 text-center p-[10px]">
-                SITE_ANALYSIS_READY<br/>(13-Step Ontology Scan Ready)
+              <h3 className="font-bebas text-[14px] text-neutral-400 uppercase tracking-widest mb-3">이미지 스캔</h3>
+              <div className="w-full h-[120px] bg-neutral-50/50 border-dashed border border-neutral-300 rounded-xl flex items-center justify-center text-[12px] text-neutral-400 text-center p-[10px]">
+                <span className="font-black tracking-widest">SITE_ANALYSIS_READY</span><br/><br/>(13-Step Ontology Scan Ready)
               </div>
             </section>
           )}
